@@ -34,6 +34,10 @@
             this.lblPageInfo = new System.Windows.Forms.Label();
             this.btnImprimer = new System.Windows.Forms.Button();
             this.btnChargerCSV = new System.Windows.Forms.Button();
+            this.nbColonnes = new System.Windows.Forms.NumericUpDown();
+            this.nbLignes = new System.Windows.Forms.NumericUpDown();
+            ((System.ComponentModel.ISupportInitialize)(this.nbColonnes)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nbLignes)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -91,11 +95,27 @@
             this.btnChargerCSV.Text = "Charger CSV";
             this.btnChargerCSV.UseVisualStyleBackColor = true;
             // 
+            // nbColonnes
+            // 
+            this.nbColonnes.Location = new System.Drawing.Point(339, 12);
+            this.nbColonnes.Name = "nbColonnes";
+            this.nbColonnes.Size = new System.Drawing.Size(113, 20);
+            this.nbColonnes.TabIndex = 6;
+            // 
+            // nbLignes
+            // 
+            this.nbLignes.Location = new System.Drawing.Point(468, 12);
+            this.nbLignes.Name = "nbLignes";
+            this.nbLignes.Size = new System.Drawing.Size(113, 20);
+            this.nbLignes.TabIndex = 7;
+            // 
             // Impression
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(861, 450);
+            this.Controls.Add(this.nbLignes);
+            this.Controls.Add(this.nbColonnes);
             this.Controls.Add(this.btnChargerCSV);
             this.Controls.Add(this.btnImprimer);
             this.Controls.Add(this.lblPageInfo);
@@ -105,6 +125,8 @@
             this.Name = "Impression";
             this.Text = "FormImpression";
             this.Load += new System.EventHandler(this.FormImpression_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.nbColonnes)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nbLignes)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -118,5 +140,7 @@
         private System.Windows.Forms.Label lblPageInfo;
         private System.Windows.Forms.Button btnImprimer;
         private System.Windows.Forms.Button btnChargerCSV;
+        private System.Windows.Forms.NumericUpDown nbColonnes;
+        private System.Windows.Forms.NumericUpDown nbLignes;
     }
 }

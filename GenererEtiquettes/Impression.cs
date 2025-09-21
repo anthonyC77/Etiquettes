@@ -19,8 +19,6 @@ namespace GenererEtiquettes
         private int etiquetteCourante = 0;
         private List<Produit> _Etiquettes;
         private PictureBox _apercu;
-        private NumericUpDown _nbColonnes;
-        private NumericUpDown _nbLignes;
         private PrintDocument _docImprimer;
         private int pageActuelle = 0;
         private int totalPages = 0;
@@ -85,8 +83,8 @@ namespace GenererEtiquettes
             _docImprimer.PrintPage += ImpressionMultiplePages;
 
             // Générer l'aperçu initial
-            _nbLignes.ValueChanged += (s, e) => { pageActuelle = 0; GenererApercu(); };
-            _nbColonnes.ValueChanged += (s, e) => { pageActuelle = 0; GenererApercu(); };
+            nbLignes.ValueChanged += (s, e) => { pageActuelle = 0; GenererApercu(); };
+            nbColonnes.ValueChanged += (s, e) => { pageActuelle = 0; GenererApercu(); };
 
             _apercu.MouseDoubleClick += Apercu_MouseDoubleClick;
 
@@ -98,8 +96,8 @@ namespace GenererEtiquettes
             if (_Etiquettes == null || _Etiquettes.Count == 0) return;
 
             // Calculer quelle étiquette a été cliquée
-            int colonnes = (int)_nbColonnes.Value;
-            int lignes = (int)_nbLignes.Value;
+            int colonnes = (int)nbColonnes.Value;
+            int lignes = (int)nbLignes.Value;
 
             // Obtenir les dimensions réelles de l'image affichée dans le PictureBox
             if (_apercu.Image == null) return;
@@ -182,10 +180,9 @@ namespace GenererEtiquettes
             int lignesDefaut = (int)Math.Floor(29.7 / 3.0);
 
             lblColonnes = new Label { Text = "Colonnes:", Left = 10, Top = 15 };
-            _nbColonnes = new NumericUpDown { Left = 80, Top = 12, Minimum = 1, Maximum = 10, Value = colonnesDefaut };
-
+            nbColonnes.Value = colonnesDefaut;
+            nbLignes.Value = lignesDefaut;
             lblLignes = new Label { Text = "Lignes:", Left = 150, Top = 15 };
-            _nbLignes = new NumericUpDown { Left = 200, Top = 12, Minimum = 1, Maximum = 20, Value = lignesDefaut };
 
             btnChargerCSV.Click += (s, e) => LoadFileCsv();
 
@@ -195,9 +192,7 @@ namespace GenererEtiquettes
             panel.Controls.AddRange(new Control[]
             {
                 lblColonnes,
-                _nbColonnes,
                 lblLignes,
-                _nbLignes,
                 btnChargerCSV,
             });
         }
@@ -217,8 +212,8 @@ namespace GenererEtiquettes
                 return;
             }
 
-            int colonnes = (int)_nbColonnes.Value;
-            int lignes = (int)_nbLignes.Value;
+            int colonnes = (int)nbColonnes.Value;
+            int lignes = (int)nbLignes.Value;
 
             int etiquettesParPage = colonnes * lignes;
             int indexDepart = pageActuelle * etiquettesParPage;
@@ -258,8 +253,8 @@ namespace GenererEtiquettes
                 return;
             }
 
-            int colonnes = (int)_nbColonnes.Value;
-            int lignes = (int)_nbLignes.Value;
+            int colonnes = (int)nbColonnes.Value;
+            int lignes = (int)nbLignes.Value;
             int etiquettesParPage = colonnes * lignes;
 
             totalPages = Math.Max(1, (int)Math.Ceiling((double)_Etiquettes.Count / etiquettesParPage));
@@ -327,8 +322,8 @@ namespace GenererEtiquettes
 
         private void DocImprimer_PrintPage(object sender, PrintPageEventArgs e)
         {
-            int colonnes = (int)_nbColonnes.Value;
-            int lignes = (int)_nbLignes.Value;
+            int colonnes = (int)nbColonnes.Value;
+            int lignes = (int)nbLignes.Value;
 
             DessinerEtiquettes(e.Graphics, e.MarginBounds, colonnes, lignes);
 
@@ -338,8 +333,8 @@ namespace GenererEtiquettes
 
         private void ImpressionMultiplePages(object sender, PrintPageEventArgs e)
         {
-            int colonnes = (int)_nbColonnes.Value;
-            int lignes = (int)_nbLignes.Value;
+            int colonnes = (int)nbColonnes.Value;
+            int lignes = (int)nbLignes.Value;
             etiquetteCourante = DessinerEtiquettes(e.Graphics, e.MarginBounds, colonnes, lignes, etiquetteCourante);
             e.HasMorePages = etiquetteCourante < _Etiquettes.Count;
         }
