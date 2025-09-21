@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GenererEtiquettes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -10,15 +11,10 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace GenerateurEtiquettes
+namespace GenererEtiquettes
 {
-    public partial class FormImpression : Form
+    public partial class Impression : Form
     {
-        private void FormImpression_Load(object sender, EventArgs e)
-        {
-            
-        }
-
         private int nombreMaximumCaractereLibelle = 30;
         private int etiquetteCourante = 0;
         private List<Produit> _Etiquettes;
@@ -29,17 +25,20 @@ namespace GenerateurEtiquettes
         private PrintDocument _docImprimer;
         private int pageActuelle = 0;
         private int totalPages = 0;
-        private Button _btnPagePrecedente;
-        private Button _btnPageSuivante;
-        private Label _lblPageInfo;
         private NumericUpDown _taillePoliceLibelle;
         private NumericUpDown _taillePoliceprix;
         private NumericUpDown _maxCaracteres;
 
-        public FormImpression()
+        public Impression()
         {
+            InitializeComponent();
             _Etiquettes = new List<Produit>();
-            InitialiserComposants();            
+            InitialiserComposants();
+        }
+
+        private void FormImpression_Load(object sender, EventArgs e)
+        {
+
         }
 
         private void LoadFileCsv()
@@ -57,6 +56,9 @@ namespace GenerateurEtiquettes
 
                     // Chargement des données du CSV
                     _Etiquettes = LireFichier.Parcourir(cheminFichier);
+
+                    pageActuelle = 0;
+                    MettreAJourNavigationPage();
                     GenererApercu();
                 }
             }
@@ -85,36 +87,88 @@ namespace GenerateurEtiquettes
             _docImprimer.PrintPage += ImpressionMultiplePages;
 
             // Générer l'aperçu initial
-            _nbLignes.ValueChanged += (s, e) => GenererApercu();
-            _nbColonnes.ValueChanged += (s, e) => GenererApercu();
-
-            GenererApercu();
+            _nbLignes.ValueChanged += (s, e) => { pageActuelle = 0; GenererApercu(); };
+            _nbColonnes.ValueChanged += (s, e) => { pageActuelle = 0; GenererApercu(); };
 
             _apercu.MouseDoubleClick += Apercu_MouseDoubleClick;
+
+            MettreAJourNavigationPage();
+            GenererApercu();
         }
         private void Apercu_MouseDoubleClick(object sender, MouseEventArgs e)
         {
+            if (_Etiquettes == null || _Etiquettes.Count == 0) return;
+
             // Calculer quelle étiquette a été cliquée
             int colonnes = (int)_nbColonnes.Value;
             int lignes = (int)_nbLignes.Value;
 
-            int largeurEtiquette = _apercu.Width / colonnes;
-            int hauteurEtiquette = _apercu.Height / lignes;
+            // Obtenir les dimensions réelles de l'image affichée dans le PictureBox
+            if (_apercu.Image == null) return;
 
-            int colonne = e.X / largeurEtiquette;
-            int ligne = e.Y / hauteurEtiquette;
+            // Calculer les dimensions de l'image affichée (avec SizeMode.Zoom)
+            Rectangle imageRect = GetImageDisplayRectangle(_apercu);
+
+            // Vérifier si le clic est dans l'image
+            if (!imageRect.Contains(e.Location)) return;
+
+            // Convertir les coordonnées du clic vers les coordonnées de l'image
+            float scaleX = (float)_apercu.Image.Width / imageRect.Width;
+            float scaleY = (float)_apercu.Image.Height / imageRect.Height;
+
+            int imageX = (int)((e.X - imageRect.X) * scaleX);
+            int imageY = (int)((e.Y - imageRect.Y) * scaleY);
+
+            int largeurEtiquette = _apercu.Image.Width / colonnes;
+            int hauteurEtiquette = _apercu.Image.Height / lignes;
+
+            int colonne = imageX / largeurEtiquette;
+            int ligne = imageY / hauteurEtiquette;
+
+            // S'assurer que les coordonnées sont valides
+            if (colonne >= colonnes || ligne >= lignes) return;
 
             int etiquettesParPage = colonnes * lignes;
             int indexEtiquette = pageActuelle * etiquettesParPage + ligne * colonnes + colonne;
 
             if (indexEtiquette < _Etiquettes.Count)
             {
-                var formEdition = new FormEditionEtiquette(_Etiquettes[indexEtiquette]);
+                var formEdition = new EditionEtiquette(_Etiquettes[indexEtiquette]);
                 if (formEdition.ShowDialog() == DialogResult.OK)
                 {
                     GenererApercu(); // Régénérer après édition
                 }
             }
+        }
+
+        private Rectangle GetImageDisplayRectangle(PictureBox pictureBox)
+        {
+            if (pictureBox.Image == null) return Rectangle.Empty;
+
+            // Calculer le rectangle d'affichage pour SizeMode.Zoom
+            float imageAspect = (float)pictureBox.Image.Width / pictureBox.Image.Height;
+            float containerAspect = (float)pictureBox.Width / pictureBox.Height;
+
+            int displayWidth, displayHeight, displayX, displayY;
+
+            if (imageAspect > containerAspect)
+            {
+                // L'image est plus large que le conteneur
+                displayWidth = pictureBox.Width;
+                displayHeight = (int)(pictureBox.Width / imageAspect);
+                displayX = 0;
+                displayY = (pictureBox.Height - displayHeight) / 2;
+            }
+            else
+            {
+                // L'image est plus haute que le conteneur
+                displayWidth = (int)(pictureBox.Height * imageAspect);
+                displayHeight = pictureBox.Height;
+                displayX = (pictureBox.Width - displayWidth) / 2;
+                displayY = 0;
+            }
+
+            return new Rectangle(displayX, displayY, displayWidth, displayHeight);
         }
 
         private void TailleEtiquettes_10_3(Panel panel)
@@ -142,66 +196,54 @@ namespace GenerateurEtiquettes
             var btnChargerCSV = new Button { Text = "Charger CSV", Left = 620, Top = 25, Width = 100 };
             btnChargerCSV.Click += (s, e) => LoadFileCsv();
 
-            _btnPagePrecedente = new Button { Text = "< Précédent", Left = 250, Top = 45, Width = 80 };
-            _btnPagePrecedente.Click += (s, e) => ChangerPage(-1);
+            btnPagePrecedente.Click += (s, e) => ChangerPage(-1);
+            btnPageSuivante.Click += (s, e) => ChangerPage(1);
 
-            _btnPageSuivante = new Button { Text = "Suivant >", Left = 340, Top = 45, Width = 80 };
-            _btnPageSuivante.Click += (s, e) => ChangerPage(1);
-
-            _lblPageInfo = new Label { Text = "Page 1/1", Left = 430, Top = 48, Width = 60 };
-
-            panel.Controls.AddRange(new Control[] 
-            { 
-                lblColonnes, 
-                _nbColonnes, 
-                lblLignes, 
-                _nbLignes, 
-                lblTaille, 
-                _btnImprimer, 
+            panel.Controls.AddRange(new Control[]
+            {
+                lblColonnes,
+                _nbColonnes,
+                lblLignes,
+                _nbLignes,
+                lblTaille,
+                _btnImprimer,
                 btnChargerCSV,
-                _btnPagePrecedente,
-                _btnPageSuivante,
-                _lblPageInfo
             });
         }
 
         private void GenererApercu()
         {
+            if (_Etiquettes == null || _Etiquettes.Count == 0)
+            {
+                // Afficher une image vide si pas d'étiquettes
+                Bitmap bmpVide = new Bitmap(827, 1169);
+                using (Graphics g = Graphics.FromImage(bmpVide))
+                {
+                    g.Clear(Color.White);
+                }
+                _apercu.Image = bmpVide;
+                MettreAJourNavigationPage();
+                return;
+            }
+
             int colonnes = (int)_nbColonnes.Value;
             int lignes = (int)_nbLignes.Value;
+
+            int etiquettesParPage = colonnes * lignes;
+            int indexDepart = pageActuelle * etiquettesParPage;
 
             // Créer une image pour l'aperçu
             Bitmap bmp = new Bitmap(827, 1169); // A4 à 100 DPI
             using (Graphics g = Graphics.FromImage(bmp))
             {
                 g.Clear(Color.White);
-                DessinerEtiquettes(g, new Rectangle(0, 0, bmp.Width, bmp.Height), colonnes, lignes);
+                // CORRECTION : Passer l'indexDepart à DessinerEtiquettes
+                DessinerEtiquettes(g, new Rectangle(0, 0, bmp.Width, bmp.Height), colonnes, lignes, indexDepart);
             }
 
             // Afficher l'aperçu
             _apercu.Image = bmp;
-        }
-
-        private void AjouterControlesPersonnalisation(Panel panel)
-        {
-            panel.Height = 120; // Augmenter la hauteur
-
-            // Ligne 3 - Personnalisation
-            var lblTailleLibelle = new Label { Text = "Taille libellé:", Left = 10, Top = 75, Width = 80 };
-            _taillePoliceLibelle = new NumericUpDown { Left = 95, Top = 72, Width = 50, Minimum = 8, Maximum = 20, Value = 11 };
-
-            var lblTaillePrix = new Label { Text = "Taille prix:", Left = 160, Top = 75, Width = 70 };
-            _taillePoliceprix = new NumericUpDown { Left = 235, Top = 72, Width = 50, Minimum = 8, Maximum = 24, Value = 13 };
-
-            var lblMaxCarac = new Label { Text = "Max caractères:", Left = 300, Top = 75, Width = 90 };
-            _maxCaracteres = new NumericUpDown { Left = 395, Top = 72, Width = 50, Minimum = 10, Maximum = 50, Value = nombreMaximumCaractereLibelle };
-
-            // Événements pour régénérer l'aperçu
-            _taillePoliceLibelle.ValueChanged += (s, e) => GenererApercu();
-            _taillePoliceprix.ValueChanged += (s, e) => GenererApercu();
-            _maxCaracteres.ValueChanged += (s, e) => { nombreMaximumCaractereLibelle = (int)_maxCaracteres.Value; GenererApercu(); };
-
-            panel.Controls.AddRange(new Control[] { lblTailleLibelle, _taillePoliceLibelle, lblTaillePrix, _taillePoliceprix, lblMaxCarac, _maxCaracteres });
+            MettreAJourNavigationPage();
         }
 
         private void ChangerPage(int direction)
@@ -216,15 +258,28 @@ namespace GenerateurEtiquettes
 
         private void MettreAJourNavigationPage()
         {
+            if (_Etiquettes == null || _Etiquettes.Count == 0)
+            {
+                lblPageInfo.Text = "Page 0/0";
+                btnPagePrecedente.Enabled = false;
+                btnPageSuivante.Enabled = false;
+                totalPages = 0;
+                return;
+            }
+
             int colonnes = (int)_nbColonnes.Value;
             int lignes = (int)_nbLignes.Value;
             int etiquettesParPage = colonnes * lignes;
 
             totalPages = Math.Max(1, (int)Math.Ceiling((double)_Etiquettes.Count / etiquettesParPage));
 
-            _lblPageInfo.Text = $"Page {pageActuelle + 1}/{totalPages}";
-            _btnPagePrecedente.Enabled = pageActuelle > 0;
-            _btnPageSuivante.Enabled = pageActuelle < totalPages - 1;
+            // S'assurer que pageActuelle est dans les limites
+            if (pageActuelle >= totalPages) pageActuelle = totalPages - 1;
+            if (pageActuelle < 0) pageActuelle = 0;
+
+            lblPageInfo.Text = $"Page {pageActuelle + 1}/{totalPages}";
+            btnPagePrecedente.Enabled = pageActuelle > 0;
+            btnPageSuivante.Enabled = pageActuelle < totalPages - 1;
         }
 
         private int DessinerEtiquettes(Graphics g, Rectangle zone, int colonnes, int lignes, int indexProduit = 0)
@@ -236,57 +291,34 @@ namespace GenerateurEtiquettes
             format.Alignment = StringAlignment.Center;
             format.LineAlignment = StringAlignment.Center;
 
+            int currentIndex = indexProduit;
+
             for (int y = 0; y < lignes; y++)
             {
                 for (int x = 0; x < colonnes; x++)
                 {
-                    indexProduit = CreerEtiquette(g, zone, x, y, indexProduit, largeurEtiquette, hauteurEtiquette);
+                    // Dessiner l'étiquette ou un cadre vide
+                    Rectangle rectEtiquette = new Rectangle(
+                        zone.X + x * largeurEtiquette,
+                        zone.Y + y * hauteurEtiquette,
+                        largeurEtiquette,
+                        hauteurEtiquette);
+
+                    // Toujours dessiner le cadre
+                    g.DrawRectangle(Pens.Black, rectEtiquette);
+
+                    // Si on a une étiquette, la dessiner
+                    if (currentIndex < _Etiquettes.Count)
+                    {
+                        var produit = _Etiquettes[currentIndex];
+                        DessinerChaqueInformation(g, currentIndex, rectEtiquette, produit);
+                    }
+                    // Incrémenter même si pas d'étiquette pour garder la position correcte
+                    currentIndex++;
                 }
             }
 
-            return indexProduit;
-        }
-
-        private int CreerEtiquette(Graphics g, Rectangle zone, int x, int y, int indexProduit, int largeurEtiquette, int hauteurEtiquette)
-        {
-            if (indexProduit < _Etiquettes.Count)
-            {
-                Rectangle rectEtiquette = new Rectangle(
-                    zone.X + x * largeurEtiquette,
-                    zone.Y + y * hauteurEtiquette,
-                    largeurEtiquette,
-                    hauteurEtiquette);
-
-                // Dessiner un cadre
-                g.DrawRectangle(Pens.Black, rectEtiquette);
-
-                // Récupérer le produit actuel
-                var produit = _Etiquettes[indexProduit];
-
-                // Dessiner le contenu de l'étiquette
-                Rectangle rectLibelle = new Rectangle(
-                    rectEtiquette.X + 5,
-                    rectEtiquette.Y + 5,
-                    rectEtiquette.Width - 10,
-                    rectEtiquette.Height / 2 - 15);
-
-                Rectangle rectPrix = new Rectangle(
-                    rectEtiquette.X + 5,
-                    rectEtiquette.Y + rectEtiquette.Height / 2,
-                    rectEtiquette.Width - 10,
-                    30);
-
-                Rectangle rectNumero = new Rectangle(
-                    rectEtiquette.X + 5,
-                    rectEtiquette.Y + rectEtiquette.Height / 2 + 35,
-                    rectEtiquette.Width - 10,
-                    20);
-
-                indexProduit = DessinerChaqueInformation(g, indexProduit, rectEtiquette, produit);
-
-            }
-
-            return indexProduit;
+            return currentIndex;
         }
 
         private void BtnImprimer_Click(object sender, EventArgs e)
@@ -316,7 +348,7 @@ namespace GenerateurEtiquettes
         private void ImpressionMultiplePages(object sender, PrintPageEventArgs e)
         {
             int colonnes = (int)_nbColonnes.Value;
-            int lignes = (int)_nbLignes.Value;            
+            int lignes = (int)_nbLignes.Value;
             etiquetteCourante = DessinerEtiquettes(e.Graphics, e.MarginBounds, colonnes, lignes, etiquetteCourante);
             e.HasMorePages = etiquetteCourante < _Etiquettes.Count;
         }
@@ -327,7 +359,7 @@ namespace GenerateurEtiquettes
             int tailleLibelle = (int)(_taillePoliceLibelle?.Value ?? 11);
             int taillePrix = (int)(_taillePoliceprix?.Value ?? 13);
 
-            using (Font fontLibelle = new Font("Arial",11, FontStyle.Regular))
+            using (Font fontLibelle = new Font("Arial", 11, FontStyle.Regular))
             using (Font fontPrix = new Font("Arial", 13, FontStyle.Bold))
             using (Font fontPrixSolde = new Font("Arial", 13, FontStyle.Bold))
             using (Font fontkg = new Font("Arial", 12, FontStyle.Regular))
@@ -393,7 +425,7 @@ namespace GenerateurEtiquettes
 
                 // Dessiner le libellé court en haut, centré
 
-                
+
                 int max = produit.LibelleCourt.Length;
                 if (max > nombreMaximumCaractereLibelle)
                 {
