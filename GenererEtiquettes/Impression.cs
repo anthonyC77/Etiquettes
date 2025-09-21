@@ -179,22 +179,13 @@ namespace GenererEtiquettes
             int colonnesDefaut = (int)Math.Floor(21.0 / 10.0);
             int lignesDefaut = (int)Math.Floor(29.7 / 3.0);
 
-            lblColonnes = new Label { Text = "Colonnes:", Left = 10, Top = 15 };
             nbColonnes.Value = colonnesDefaut;
             nbLignes.Value = lignesDefaut;
-            lblLignes = new Label { Text = "Lignes:", Left = 150, Top = 15 };
 
             btnChargerCSV.Click += (s, e) => LoadFileCsv();
 
             btnPagePrecedente.Click += (s, e) => ChangerPage(-1);
             btnPageSuivante.Click += (s, e) => ChangerPage(1);
-
-            panel.Controls.AddRange(new Control[]
-            {
-                lblColonnes,
-                lblLignes,
-                btnChargerCSV,
-            });
         }
 
         private void GenererApercu()
