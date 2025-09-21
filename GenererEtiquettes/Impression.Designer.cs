@@ -32,12 +32,14 @@
             this.btnPagePrecedente = new System.Windows.Forms.Button();
             this.btnPageSuivante = new System.Windows.Forms.Button();
             this.lblPageInfo = new System.Windows.Forms.Label();
+            this.btnImprimer = new System.Windows.Forms.Button();
+            this.btnChargerCSV = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(58, 44);
+            this.label1.Location = new System.Drawing.Point(166, 51);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(144, 13);
             this.label1.TabIndex = 0;
@@ -45,7 +47,7 @@
             // 
             // btnPagePrecedente
             // 
-            this.btnPagePrecedente.Location = new System.Drawing.Point(231, 39);
+            this.btnPagePrecedente.Location = new System.Drawing.Point(339, 46);
             this.btnPagePrecedente.Name = "btnPagePrecedente";
             this.btnPagePrecedente.Size = new System.Drawing.Size(113, 23);
             this.btnPagePrecedente.TabIndex = 1;
@@ -54,7 +56,7 @@
             // 
             // btnPageSuivante
             // 
-            this.btnPageSuivante.Location = new System.Drawing.Point(360, 39);
+            this.btnPageSuivante.Location = new System.Drawing.Point(468, 46);
             this.btnPageSuivante.Name = "btnPageSuivante";
             this.btnPageSuivante.Size = new System.Drawing.Size(113, 23);
             this.btnPageSuivante.TabIndex = 2;
@@ -64,17 +66,38 @@
             // lblPageInfo
             // 
             this.lblPageInfo.AutoSize = true;
-            this.lblPageInfo.Location = new System.Drawing.Point(489, 44);
+            this.lblPageInfo.Location = new System.Drawing.Point(597, 51);
             this.lblPageInfo.Name = "lblPageInfo";
             this.lblPageInfo.Size = new System.Drawing.Size(52, 13);
             this.lblPageInfo.TabIndex = 3;
             this.lblPageInfo.Text = "Page 0/0";
             // 
+            // btnImprimer
+            // 
+            this.btnImprimer.Location = new System.Drawing.Point(667, 46);
+            this.btnImprimer.Name = "btnImprimer";
+            this.btnImprimer.Size = new System.Drawing.Size(113, 23);
+            this.btnImprimer.TabIndex = 4;
+            this.btnImprimer.Text = "Imprimer";
+            this.btnImprimer.UseVisualStyleBackColor = true;
+            this.btnImprimer.Click += new System.EventHandler(this.BtnImprimer_Click);
+            // 
+            // btnChargerCSV
+            // 
+            this.btnChargerCSV.Location = new System.Drawing.Point(12, 46);
+            this.btnChargerCSV.Name = "btnChargerCSV";
+            this.btnChargerCSV.Size = new System.Drawing.Size(141, 23);
+            this.btnChargerCSV.TabIndex = 5;
+            this.btnChargerCSV.Text = "Charger CSV";
+            this.btnChargerCSV.UseVisualStyleBackColor = true;
+            // 
             // Impression
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(861, 450);
+            this.Controls.Add(this.btnChargerCSV);
+            this.Controls.Add(this.btnImprimer);
             this.Controls.Add(this.lblPageInfo);
             this.Controls.Add(this.btnPageSuivante);
             this.Controls.Add(this.btnPagePrecedente);
@@ -93,5 +116,7 @@
         private System.Windows.Forms.Button btnPagePrecedente;
         private System.Windows.Forms.Button btnPageSuivante;
         private System.Windows.Forms.Label lblPageInfo;
+        private System.Windows.Forms.Button btnImprimer;
+        private System.Windows.Forms.Button btnChargerCSV;
     }
 }

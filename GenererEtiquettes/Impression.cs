@@ -19,7 +19,6 @@ namespace GenererEtiquettes
         private int etiquetteCourante = 0;
         private List<Produit> _Etiquettes;
         private PictureBox _apercu;
-        private Button _btnImprimer;
         private NumericUpDown _nbColonnes;
         private NumericUpDown _nbLignes;
         private PrintDocument _docImprimer;
@@ -73,7 +72,6 @@ namespace GenererEtiquettes
             panel.Dock = DockStyle.Top;
 
             TailleEtiquettes_10_3(panel);
-            _btnImprimer.Click += BtnImprimer_Click;
 
             _apercu = new PictureBox();
             _apercu.Dock = DockStyle.Fill;
@@ -189,11 +187,6 @@ namespace GenererEtiquettes
             lblLignes = new Label { Text = "Lignes:", Left = 150, Top = 15 };
             _nbLignes = new NumericUpDown { Left = 200, Top = 12, Minimum = 1, Maximum = 20, Value = lignesDefaut };
 
-            var lblTaille = new Label { Text = "Taille étiquette: 10cm x 3cm", Left = 10, Top = 45, Width = 200 };
-
-            _btnImprimer = new Button { Text = "Imprimer", Left = 500, Top = 25, Width = 100 };
-
-            var btnChargerCSV = new Button { Text = "Charger CSV", Left = 620, Top = 25, Width = 100 };
             btnChargerCSV.Click += (s, e) => LoadFileCsv();
 
             btnPagePrecedente.Click += (s, e) => ChangerPage(-1);
@@ -205,8 +198,6 @@ namespace GenererEtiquettes
                 _nbColonnes,
                 lblLignes,
                 _nbLignes,
-                lblTaille,
-                _btnImprimer,
                 btnChargerCSV,
             });
         }

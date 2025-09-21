@@ -24,6 +24,7 @@ namespace GenererEtiquettes
             txtPrixVente.Text = Produit.PrixDeVente.ToString();
             txtPrixSolde.Text = Produit.PrixSolde.ToString();
             txtReference.Text = Produit.ReferenceExterne;
+            tbxPoids.Text = Produit.LibellePoids;
         }
 
         private void btnOK_Click(object sender, EventArgs e)
@@ -34,6 +35,7 @@ namespace GenererEtiquettes
             if (decimal.TryParse(txtPrixSolde.Text, out decimal prixSolde))
                 Produit.PrixSolde = prixSolde;
             Produit.ReferenceExterne = txtReference.Text;
+            Produit.LibellePoids = tbxPoids.Text;
 
             DialogResult = DialogResult.OK;
         }

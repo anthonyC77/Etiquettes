@@ -33,6 +33,7 @@
             this.txtPrixSolde = new System.Windows.Forms.TextBox();
             this.txtReference = new System.Windows.Forms.TextBox();
             this.btnOK = new System.Windows.Forms.Button();
+            this.tbxPoids = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // txtLibelleCourt
@@ -65,7 +66,7 @@
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(47, 228);
+            this.btnOK.Location = new System.Drawing.Point(47, 255);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(221, 23);
             this.btnOK.TabIndex = 4;
@@ -73,11 +74,19 @@
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
+            // tbxPoids
+            // 
+            this.tbxPoids.Location = new System.Drawing.Point(47, 217);
+            this.tbxPoids.Name = "tbxPoids";
+            this.tbxPoids.Size = new System.Drawing.Size(221, 20);
+            this.tbxPoids.TabIndex = 5;
+            // 
             // EditionEtiquette
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(321, 304);
+            this.Controls.Add(this.tbxPoids);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.txtReference);
             this.Controls.Add(this.txtPrixSolde);
@@ -98,5 +107,6 @@
         private System.Windows.Forms.TextBox txtPrixSolde;
         private System.Windows.Forms.TextBox txtReference;
         private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.TextBox tbxPoids;
     }
 }
