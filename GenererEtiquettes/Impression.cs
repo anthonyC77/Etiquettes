@@ -26,6 +26,7 @@ namespace GenererEtiquettes
         private NumericUpDown _taillePoliceLibelle;
         private NumericUpDown _taillePoliceprix;
         private NumericUpDown _maxCaracteres;
+        private string CheminFichier = string.Empty;
 
         public Impression()
         {
@@ -50,21 +51,25 @@ namespace GenererEtiquettes
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     // Ici vous pouvez traiter le fichier CSV sélectionné
-                    string cheminFichier = openFileDialog.FileName;
+                    CheminFichier = openFileDialog.FileName;
 
-                    // Chargement des données du CSV
-                    _Etiquettes = LireFichier.Parcourir(cheminFichier);
-
-                    foreach (var etiquette in _Etiquettes)
-                    {
-                        etiquette.EstSelectionne = true;
-                    }
-
-                    pageActuelle = 0;
-                    MettreAJourNavigationPage();
-                    GenererApercu();
+                    ChargerDonneesCSV();
                 }
             }
+        }
+
+        private void ChargerDonneesCSV()
+        {
+            _Etiquettes = LireFichier.Parcourir(CheminFichier);
+
+            foreach (var etiquette in _Etiquettes)
+            {
+                etiquette.EstSelectionne = true;
+            }
+
+            pageActuelle = 0;
+            MettreAJourNavigationPage();
+            GenererApercu();
         }
 
         private void InitialiserComposants()
@@ -91,6 +96,11 @@ namespace GenererEtiquettes
             // Générer l'aperçu initial
             nbLignes.ValueChanged += (s, e) => { pageActuelle = 0; GenererApercu(); };
             nbColonnes.ValueChanged += (s, e) => { pageActuelle = 0; GenererApercu(); };
+
+            numUpdTailleLibelleCourt.Value = 11;
+            numUpTailleLibellePrix.Value = 13;
+            numUpTailleLibelleProv.Value = 8;
+            numUpTailleLibellePoids.Value = 12;
 
             _apercu.MouseDoubleClick += Apercu_MouseDoubleClick;
             _apercu.MouseClick += Apercu_MouseClick;
@@ -213,7 +223,6 @@ namespace GenererEtiquettes
 
         private void TailleEtiquettes_10_3(Panel panel)
         {
-            Label lblColonnes, lblLignes;
             panel.Height = 120; // Augmenter la hauteur pour les nouveaux boutons
 
             int colonnesDefaut = (int)Math.Floor(21.0 / 10.0);
@@ -225,36 +234,20 @@ namespace GenererEtiquettes
             btnChargerCSV.Click += (s, e) => LoadFileCsv();
             btnPagePrecedente.Click += (s, e) => ChangerPage(-1);
             btnPageSuivante.Click += (s, e) => ChangerPage(1);
+            btnPrecFast.Click += (s, e) => ChangerPage(-5);
+            btnSuivantFast.Click += (s, e) => ChangerPage(5);
 
-            // Ajouter des boutons pour la sélection
-            var btnToutSelectionner = new Button();
-            btnToutSelectionner.Text = "Tout sélectionner";
-            btnToutSelectionner.Location = new Point(10, 90);
-            btnToutSelectionner.Size = new Size(120, 25);
             btnToutSelectionner.Click += (s, e) => {
                 foreach (var produit in _Etiquettes)
                     produit.EstSelectionne = true;
                 GenererApercu();
             };
-            panel.Controls.Add(btnToutSelectionner);
 
-            var btnToutDeselectionner = new Button();
-            btnToutDeselectionner.Text = "Tout désélectionner";
-            btnToutDeselectionner.Location = new Point(140, 90);
-            btnToutDeselectionner.Size = new Size(120, 25);
             btnToutDeselectionner.Click += (s, e) => {
                 foreach (var produit in _Etiquettes)
                     produit.EstSelectionne = false;
                 GenererApercu();
             };
-            panel.Controls.Add(btnToutDeselectionner);
-
-            var lblInfo = new Label();
-            lblInfo.Text = "Clic simple sur ☐ pour sélectionner/désélectionner, double-clic pour éditer";
-            lblInfo.Location = new Point(270, 90);
-            lblInfo.Size = new Size(400, 25);
-            lblInfo.ForeColor = Color.Gray;
-            panel.Controls.Add(lblInfo);
         }
 
         private void GenererApercu()
@@ -275,7 +268,7 @@ namespace GenererEtiquettes
             int colonnes = (int)nbColonnes.Value;
             int lignes = (int)nbLignes.Value;
 
-            lblTailleEtiquettes.Text = $"Taille étiquette: {((21.0 - 1)  / colonnes):0.00} cm x {((29.7-2.7) / lignes):0.00} cm";
+            lbTailleEtiquette.Text = $"Taille étiquette: {((21.0 - 1)  / colonnes):0.00} cm x {((29.7-2.7) / lignes):0.00} cm";
 
             int etiquettesParPage = colonnes * lignes;
             int indexDepart = pageActuelle * etiquettesParPage;
@@ -308,9 +301,11 @@ namespace GenererEtiquettes
         {
             if (_Etiquettes == null || _Etiquettes.Count == 0)
             {
-                lblPageInfo.Text = "Page 0/0";
+                grpPage.Text = "Page 0/0";
                 btnPagePrecedente.Enabled = false;
                 btnPageSuivante.Enabled = false;
+                btnSuivantFast.Enabled = false;
+                btnPrecFast.Enabled = false;
                 totalPages = 0;
                 return;
             }
@@ -325,9 +320,11 @@ namespace GenererEtiquettes
             if (pageActuelle >= totalPages) pageActuelle = totalPages - 1;
             if (pageActuelle < 0) pageActuelle = 0;
 
-            lblPageInfo.Text = $"Page {pageActuelle + 1}/{totalPages}";
+            grpPage.Text = $"Page {pageActuelle + 1}/{totalPages}";
             btnPagePrecedente.Enabled = pageActuelle > 0;
+            btnPrecFast.Enabled = pageActuelle > 4;
             btnPageSuivante.Enabled = pageActuelle < totalPages - 1;
+            btnSuivantFast.Enabled = pageActuelle < totalPages - 5;
         }
 
         private int DessinerEtiquettes(Graphics g, Rectangle zone, int colonnes, int lignes, int indexProduit = 0)
@@ -414,12 +411,17 @@ namespace GenererEtiquettes
         {
             int tailleLibelle = (int)(_taillePoliceLibelle?.Value ?? 11);
             int taillePrix = (int)(_taillePoliceprix?.Value ?? 13);
+            
+            float sizeLibelleCourt = float.Parse(numUpdTailleLibelleCourt.Value.ToString());
+            float sizePrix = float.Parse(numUpTailleLibellePrix.Value.ToString());
+            float size3eLigne = float.Parse(numUpTailleLibelleProv.Value.ToString());
+            float sizePoids = float.Parse(numUpTailleLibellePoids.Value.ToString());
 
-            using (Font fontLibelle = new Font("Arial", 11, FontStyle.Regular))
-            using (Font fontPrix = new Font("Arial", 13, FontStyle.Bold))
-            using (Font fontPrixSolde = new Font("Arial", 13, FontStyle.Bold))
-            using (Font fontkg = new Font("Arial", 12, FontStyle.Regular))
-            using (Font font3eLigne = new Font("Arial", 8, FontStyle.Regular))
+            using (Font fontLibelleCourt = new Font("Arial", sizeLibelleCourt, FontStyle.Regular))
+            using (Font fontPrix = new Font("Arial", sizePrix, FontStyle.Bold))
+            using (Font fontPrixSolde = new Font("Arial", sizePrix, FontStyle.Bold))
+            using (Font fontkg = new Font("Arial", sizePoids, FontStyle.Regular))
+            using (Font font3eLigne = new Font("Arial", size3eLigne, FontStyle.Regular))
             {
                 // AJOUTER UNE CASE À COCHER en haut à droite (seulement pour l'aperçu)
                 Rectangle rectCheckbox = new Rectangle(
@@ -504,7 +506,7 @@ namespace GenererEtiquettes
                     max = nombreMaximumCaractereLibelle;
                 }
 
-                g.DrawString(produit.LibelleCourt.Substring(0, max), fontLibelle, textBrush, rectLibelleCourt, formatCentre);
+                g.DrawString(produit.LibelleCourt.Substring(0, max), fontLibelleCourt, textBrush, rectLibelleCourt, formatCentre);
                 g.DrawString(produit.PrixDeVente.ToString(), fontPrix, textBrush, rectPrixNormal, formatDroite);
 
                 if (!string.IsNullOrEmpty(produit.PrixSolde.ToString()) && produit.PrixSolde != produit.PrixDeVente && produit.PrixSolde > 0)
@@ -750,6 +752,24 @@ namespace GenererEtiquettes
             return valeur;
         }
 
-       
+        private void numUpdTailleLibelleCourt_ValueChanged(object sender, EventArgs e)
+        {
+            ChargerDonneesCSV();
+        }
+
+        private void numUpTailleLibellePrix_ValueChanged(object sender, EventArgs e)
+        {
+            ChargerDonneesCSV();
+        }
+
+        private void numUpTailleLibelleProv_ValueChanged(object sender, EventArgs e)
+        {
+            ChargerDonneesCSV();
+        }
+
+        private void numUpTailleLibellePoids_ValueChanged(object sender, EventArgs e)
+        {
+            ChargerDonneesCSV();
+        }
     }
 }
