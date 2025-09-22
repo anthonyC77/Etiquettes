@@ -38,6 +38,7 @@
             this.nbLignes = new System.Windows.Forms.NumericUpDown();
             this.lblNbColonnes = new System.Windows.Forms.Label();
             this.lblNbLignes = new System.Windows.Forms.Label();
+            this.btnSauverEtiuqettes = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.nbColonnes)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nbLignes)).BeginInit();
             this.SuspendLayout();
@@ -45,26 +46,29 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(166, 52);
+            this.label1.Location = new System.Drawing.Point(221, 64);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(144, 13);
+            this.label1.Size = new System.Drawing.Size(175, 16);
             this.label1.TabIndex = 0;
             this.label1.Text = "Taille étiquette : 10cm X 3cm";
             // 
             // btnPagePrecedente
             // 
-            this.btnPagePrecedente.Location = new System.Drawing.Point(339, 47);
+            this.btnPagePrecedente.Location = new System.Drawing.Point(452, 58);
+            this.btnPagePrecedente.Margin = new System.Windows.Forms.Padding(4);
             this.btnPagePrecedente.Name = "btnPagePrecedente";
-            this.btnPagePrecedente.Size = new System.Drawing.Size(113, 23);
+            this.btnPagePrecedente.Size = new System.Drawing.Size(151, 28);
             this.btnPagePrecedente.TabIndex = 1;
             this.btnPagePrecedente.Text = "< Précédent";
             this.btnPagePrecedente.UseVisualStyleBackColor = true;
             // 
             // btnPageSuivante
             // 
-            this.btnPageSuivante.Location = new System.Drawing.Point(468, 47);
+            this.btnPageSuivante.Location = new System.Drawing.Point(624, 58);
+            this.btnPageSuivante.Margin = new System.Windows.Forms.Padding(4);
             this.btnPageSuivante.Name = "btnPageSuivante";
-            this.btnPageSuivante.Size = new System.Drawing.Size(113, 23);
+            this.btnPageSuivante.Size = new System.Drawing.Size(151, 28);
             this.btnPageSuivante.TabIndex = 2;
             this.btnPageSuivante.Text = "Suivant >";
             this.btnPageSuivante.UseVisualStyleBackColor = true;
@@ -72,17 +76,19 @@
             // lblPageInfo
             // 
             this.lblPageInfo.AutoSize = true;
-            this.lblPageInfo.Location = new System.Drawing.Point(597, 52);
+            this.lblPageInfo.Location = new System.Drawing.Point(796, 64);
+            this.lblPageInfo.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblPageInfo.Name = "lblPageInfo";
-            this.lblPageInfo.Size = new System.Drawing.Size(52, 13);
+            this.lblPageInfo.Size = new System.Drawing.Size(61, 16);
             this.lblPageInfo.TabIndex = 3;
             this.lblPageInfo.Text = "Page 0/0";
             // 
             // btnImprimer
             // 
-            this.btnImprimer.Location = new System.Drawing.Point(667, 47);
+            this.btnImprimer.Location = new System.Drawing.Point(889, 58);
+            this.btnImprimer.Margin = new System.Windows.Forms.Padding(4);
             this.btnImprimer.Name = "btnImprimer";
-            this.btnImprimer.Size = new System.Drawing.Size(113, 23);
+            this.btnImprimer.Size = new System.Drawing.Size(151, 28);
             this.btnImprimer.TabIndex = 4;
             this.btnImprimer.Text = "Imprimer";
             this.btnImprimer.UseVisualStyleBackColor = true;
@@ -90,50 +96,67 @@
             // 
             // btnChargerCSV
             // 
-            this.btnChargerCSV.Location = new System.Drawing.Point(12, 47);
+            this.btnChargerCSV.Location = new System.Drawing.Point(13, 9);
+            this.btnChargerCSV.Margin = new System.Windows.Forms.Padding(4);
             this.btnChargerCSV.Name = "btnChargerCSV";
-            this.btnChargerCSV.Size = new System.Drawing.Size(141, 23);
+            this.btnChargerCSV.Size = new System.Drawing.Size(188, 28);
             this.btnChargerCSV.TabIndex = 5;
             this.btnChargerCSV.Text = "Charger CSV";
             this.btnChargerCSV.UseVisualStyleBackColor = true;
             // 
             // nbColonnes
             // 
-            this.nbColonnes.Location = new System.Drawing.Point(588, 12);
+            this.nbColonnes.Location = new System.Drawing.Point(784, 15);
+            this.nbColonnes.Margin = new System.Windows.Forms.Padding(4);
             this.nbColonnes.Name = "nbColonnes";
-            this.nbColonnes.Size = new System.Drawing.Size(113, 20);
+            this.nbColonnes.Size = new System.Drawing.Size(151, 22);
             this.nbColonnes.TabIndex = 6;
             // 
             // nbLignes
             // 
-            this.nbLignes.Location = new System.Drawing.Point(343, 12);
+            this.nbLignes.Location = new System.Drawing.Point(457, 15);
+            this.nbLignes.Margin = new System.Windows.Forms.Padding(4);
             this.nbLignes.Name = "nbLignes";
-            this.nbLignes.Size = new System.Drawing.Size(113, 20);
+            this.nbLignes.Size = new System.Drawing.Size(151, 22);
             this.nbLignes.TabIndex = 7;
             // 
             // lblNbColonnes
             // 
             this.lblNbColonnes.AutoSize = true;
-            this.lblNbColonnes.Location = new System.Drawing.Point(472, 14);
-            this.lblNbColonnes.Name = "label2";
-            this.lblNbColonnes.Size = new System.Drawing.Size(105, 13);
+            this.lblNbColonnes.Location = new System.Drawing.Point(629, 17);
+            this.lblNbColonnes.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblNbColonnes.Name = "lblNbColonnes";
+            this.lblNbColonnes.Size = new System.Drawing.Size(133, 16);
             this.lblNbColonnes.TabIndex = 9;
             this.lblNbColonnes.Text = "Nombre de colonnes";
             // 
             // lblNbLignes
             // 
             this.lblNbLignes.AutoSize = true;
-            this.lblNbLignes.Location = new System.Drawing.Point(227, 14);
-            this.lblNbLignes.Name = "label3";
-            this.lblNbLignes.Size = new System.Drawing.Size(89, 13);
+            this.lblNbLignes.Location = new System.Drawing.Point(303, 17);
+            this.lblNbLignes.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblNbLignes.Name = "lblNbLignes";
+            this.lblNbLignes.Size = new System.Drawing.Size(114, 16);
             this.lblNbLignes.TabIndex = 10;
             this.lblNbLignes.Text = "Nombre de lignes";
             // 
+            // btnSauverEtiuqettes
+            // 
+            this.btnSauverEtiuqettes.Location = new System.Drawing.Point(13, 52);
+            this.btnSauverEtiuqettes.Margin = new System.Windows.Forms.Padding(4);
+            this.btnSauverEtiuqettes.Name = "btnSauverEtiuqettes";
+            this.btnSauverEtiuqettes.Size = new System.Drawing.Size(188, 28);
+            this.btnSauverEtiuqettes.TabIndex = 11;
+            this.btnSauverEtiuqettes.Text = "Sauver Etiquettes";
+            this.btnSauverEtiuqettes.UseVisualStyleBackColor = true;
+            this.btnSauverEtiuqettes.Click += new System.EventHandler(this.btnSauverEtiuqettes_Click);
+            // 
             // Impression
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(861, 450);
+            this.ClientSize = new System.Drawing.Size(1148, 554);
+            this.Controls.Add(this.btnSauverEtiuqettes);
             this.Controls.Add(this.lblNbLignes);
             this.Controls.Add(this.lblNbColonnes);
             this.Controls.Add(this.nbLignes);
@@ -144,6 +167,7 @@
             this.Controls.Add(this.btnPageSuivante);
             this.Controls.Add(this.btnPagePrecedente);
             this.Controls.Add(this.label1);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Impression";
             this.Text = "FormImpression";
             this.Load += new System.EventHandler(this.FormImpression_Load);
@@ -166,5 +190,6 @@
         private System.Windows.Forms.NumericUpDown nbLignes;
         private System.Windows.Forms.Label lblNbColonnes;
         private System.Windows.Forms.Label lblNbLignes;
+        private System.Windows.Forms.Button btnSauverEtiuqettes;
     }
 }

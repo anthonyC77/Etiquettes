@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Printing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -665,5 +666,88 @@ namespace GenererEtiquettes
 
             return match.Success;
         }
+
+        private void btnSauverEtiuqettes_Click(object sender, EventArgs e)
+        {
+            if (_Etiquettes == null || !_Etiquettes.Any(etiquette => etiquette.EstSelectionne))
+            {
+                MessageBox.Show("Aucune étiquette sélectionnée à sauvegarder.", "Attention",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            {
+                saveFileDialog.Filter = "Fichiers CSV (*.csv)|*.csv";
+                saveFileDialog.Title = "Sauvegarder la sélection d'étiquettes";
+                saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                saveFileDialog.FileName = $"Selection_Etiquettes_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
+
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        EcrireFichierCsv(saveFileDialog.FileName);
+
+                        int nbEtiquettesSelectionnees = _Etiquettes.Count(etiquette => etiquette.EstSelectionne);
+                        MessageBox.Show($"Sélection sauvegardée avec succès !\n{nbEtiquettesSelectionnees} étiquettes sauvegardées dans :\n{saveFileDialog.FileName}",
+                            "Sauvegarde réussie", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Erreur lors de la sauvegarde :\n{ex.Message}", "Erreur",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
+        private void EcrireFichierCsv(string cheminFichier)
+        {
+            // Filtrer seulement les étiquettes sélectionnées
+            var etiquettesSelectionnees = _Etiquettes.Where(e => e.EstSelectionne).ToList();
+
+            using (var writer = new StreamWriter(cheminFichier, false, Encoding.UTF8))
+            {
+                string entete = ExtensionsProduit.RecupereNomColonne(eProduit.Libelle) + ";" +
+                                ExtensionsProduit.RecupereNomColonne(eProduit.LibelleCourt) + ";" +
+                                ExtensionsProduit.RecupereNomColonne(eProduit.ReferenceExterne) + ";" +
+                                ExtensionsProduit.RecupereNomColonne(eProduit.PrixDeVente) + ";" +
+                                ExtensionsProduit.RecupereNomColonne(eProduit.PrixSolde) + ";" +
+                                ExtensionsProduit.RecupereNomColonne(eProduit.CodeBarre) + ";" +
+                                ExtensionsProduit.RecupereNomColonne(eProduit.LibellePoids);
+                
+                writer.WriteLine(entete);
+
+                // Écrire chaque étiquette sélectionnée
+                foreach (var produit in etiquettesSelectionnees)
+                {
+                    var ligne = $"{EchapperCsv(produit.Libelle)}\";" +
+                               $"\"{EchapperCsv(produit.LibelleCourt)}\";" +
+                               $"\"{EchapperCsv(produit.ReferenceExterne)}\";" +
+                               $"{produit.PrixDeVente.ToString("F2").Replace(',', '.')};" +
+                               $"{produit.PrixSolde.ToString("F2").Replace(',', '.')};" +
+                               $"\"{EchapperCsv(produit.CodeBarre)}\";" +
+                               $"\"{EchapperCsv(produit.LibellePoids)}\"";
+
+                    writer.WriteLine(ligne);
+                }
+            }
+        }
+
+        // Méthode helper pour échapper les caractères spéciaux dans le CSV
+        private string EchapperCsv(string valeur)
+        {
+            if (string.IsNullOrEmpty(valeur))
+                return "";
+
+            // Remplacer les guillemets par des guillemets doublés
+            if (valeur.Contains("\""))
+                valeur = valeur.Replace("\"", "\"\"");
+
+            return valeur;
+        }
+
+       
     }
 }

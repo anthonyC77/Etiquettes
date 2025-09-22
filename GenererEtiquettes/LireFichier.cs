@@ -26,17 +26,16 @@ namespace GenererEtiquettes
                     enTetes[i] = enTetesTemp[i].Trim('"', ' ', '\\');
                 }
 
-                int indexLibelle = Array.IndexOf(enTetes, @"Libellé");
-                int indexLibelleCourt = Array.IndexOf(enTetes, @"Libellé court");
-                int indexReferenceExterne = Array.IndexOf(enTetes, "Référence externe");
-                int indexPrixDeVente = Array.IndexOf(enTetes, "Prix de vente");
-                int indexPrixSolde = Array.IndexOf(enTetes, "Prix soldé");
-                int indexCodeBarre = Array.IndexOf(enTetes, "Code-barres");
-                int indexPoids = Array.IndexOf(enTetes, "Poids");
+                int indexLibelle = ExtensionsProduit.GetChiffreProduit(enTetes,eProduit.Libelle);
+                int indexLibelleCourt = ExtensionsProduit.GetChiffreProduit(enTetes, eProduit.LibelleCourt);
+                int indexReferenceExterne = ExtensionsProduit.GetChiffreProduit(enTetes, eProduit.ReferenceExterne);
+                int indexPrixDeVente = ExtensionsProduit.GetChiffreProduit(enTetes, eProduit.PrixDeVente);
+                int indexPrixSolde = ExtensionsProduit.GetChiffreProduit(enTetes, eProduit.PrixSolde);
+                int indexCodeBarre = ExtensionsProduit.GetChiffreProduit(enTetes, eProduit.CodeBarre);
+                int indexPoids = ExtensionsProduit.GetChiffreProduit(enTetes, eProduit.LibellePoids);
 
                 // Vérification que les colonnes existent
-                if (indexLibelleCourt == -1
-                    || indexReferenceExterne == -1
+                if (indexReferenceExterne == -1
                     || indexPrixDeVente == -1
                     || indexPrixSolde == -1
                     || indexCodeBarre == -1
