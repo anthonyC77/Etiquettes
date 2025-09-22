@@ -98,10 +98,10 @@
             // btnImprimer
             // 
             this.btnImprimer.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnImprimer.Location = new System.Drawing.Point(162, 41);
+            this.btnImprimer.Location = new System.Drawing.Point(186, 39);
             this.btnImprimer.Margin = new System.Windows.Forms.Padding(4);
             this.btnImprimer.Name = "btnImprimer";
-            this.btnImprimer.Size = new System.Drawing.Size(119, 60);
+            this.btnImprimer.Size = new System.Drawing.Size(94, 60);
             this.btnImprimer.TabIndex = 4;
             this.btnImprimer.Text = "PDF";
             this.btnImprimer.UseVisualStyleBackColor = true;
@@ -110,10 +110,10 @@
             // btnChargerCSV
             // 
             this.btnChargerCSV.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnChargerCSV.Location = new System.Drawing.Point(26, 32);
+            this.btnChargerCSV.Location = new System.Drawing.Point(12, 36);
             this.btnChargerCSV.Margin = new System.Windows.Forms.Padding(4);
             this.btnChargerCSV.Name = "btnChargerCSV";
-            this.btnChargerCSV.Size = new System.Drawing.Size(119, 60);
+            this.btnChargerCSV.Size = new System.Drawing.Size(194, 60);
             this.btnChargerCSV.TabIndex = 5;
             this.btnChargerCSV.Text = "CSV";
             this.btnChargerCSV.UseVisualStyleBackColor = true;
@@ -121,10 +121,10 @@
             // btnSauverEtiuqettes
             // 
             this.btnSauverEtiuqettes.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSauverEtiuqettes.Location = new System.Drawing.Point(24, 41);
+            this.btnSauverEtiuqettes.Location = new System.Drawing.Point(44, 39);
             this.btnSauverEtiuqettes.Margin = new System.Windows.Forms.Padding(4);
             this.btnSauverEtiuqettes.Name = "btnSauverEtiuqettes";
-            this.btnSauverEtiuqettes.Size = new System.Drawing.Size(119, 60);
+            this.btnSauverEtiuqettes.Size = new System.Drawing.Size(92, 60);
             this.btnSauverEtiuqettes.TabIndex = 11;
             this.btnSauverEtiuqettes.Text = "CSV";
             this.btnSauverEtiuqettes.UseVisualStyleBackColor = true;
