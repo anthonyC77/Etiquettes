@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblTailleEtiquettes = new System.Windows.Forms.Label();
             this.btnPagePrecedente = new System.Windows.Forms.Button();
             this.btnPageSuivante = new System.Windows.Forms.Button();
             this.lblPageInfo = new System.Windows.Forms.Label();
@@ -43,15 +43,15 @@
             ((System.ComponentModel.ISupportInitialize)(this.nbLignes)).BeginInit();
             this.SuspendLayout();
             // 
-            // label1
+            // lblTailleEtiquettes
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(221, 64);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(175, 16);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Taille étiquette : 10cm X 3cm";
+            this.lblTailleEtiquettes.AutoSize = true;
+            this.lblTailleEtiquettes.Location = new System.Drawing.Point(242, 64);
+            this.lblTailleEtiquettes.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblTailleEtiquettes.Name = "lblTailleEtiquettes";
+            this.lblTailleEtiquettes.Size = new System.Drawing.Size(175, 16);
+            this.lblTailleEtiquettes.TabIndex = 0;
+            this.lblTailleEtiquettes.Text = "Taille étiquette : 10cm X 3cm";
             // 
             // btnPagePrecedente
             // 
@@ -166,7 +166,7 @@
             this.Controls.Add(this.lblPageInfo);
             this.Controls.Add(this.btnPageSuivante);
             this.Controls.Add(this.btnPagePrecedente);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.lblTailleEtiquettes);
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Impression";
             this.Text = "FormImpression";
@@ -180,7 +180,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblTailleEtiquettes;
         private System.Windows.Forms.Button btnPagePrecedente;
         private System.Windows.Forms.Button btnPageSuivante;
         private System.Windows.Forms.Label lblPageInfo;

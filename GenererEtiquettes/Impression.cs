@@ -275,6 +275,8 @@ namespace GenererEtiquettes
             int colonnes = (int)nbColonnes.Value;
             int lignes = (int)nbLignes.Value;
 
+            lblTailleEtiquettes.Text = $"Taille étiquette: {((21.0 - 1)  / colonnes):0.00} cm x {((29.7-2.7) / lignes):0.00} cm";
+
             int etiquettesParPage = colonnes * lignes;
             int indexDepart = pageActuelle * etiquettesParPage;
 
