@@ -10,5 +10,6 @@
         public string CodeBarre { get; set; }
         public int ChiffreProduit { get; set; }
         public string LibellePoids { get; set; }
+        public bool EstSelectionne { get; set; } = true;
     }
 }

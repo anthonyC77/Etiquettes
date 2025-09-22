@@ -54,6 +54,11 @@ namespace GenererEtiquettes
                     // Chargement des données du CSV
                     _Etiquettes = LireFichier.Parcourir(cheminFichier);
 
+                    foreach (var etiquette in _Etiquettes)
+                    {
+                        etiquette.EstSelectionne = true;
+                    }
+
                     pageActuelle = 0;
                     MettreAJourNavigationPage();
                     GenererApercu();
@@ -87,6 +92,7 @@ namespace GenererEtiquettes
             nbColonnes.ValueChanged += (s, e) => { pageActuelle = 0; GenererApercu(); };
 
             _apercu.MouseDoubleClick += Apercu_MouseDoubleClick;
+            _apercu.MouseClick += Apercu_MouseClick;
 
             MettreAJourNavigationPage();
             GenererApercu();
@@ -137,6 +143,43 @@ namespace GenererEtiquettes
             }
         }
 
+        private void Apercu_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (_Etiquettes == null || _Etiquettes.Count == 0) return;
+
+            int colonnes = (int)nbColonnes.Value;
+            int lignes = (int)nbLignes.Value;
+
+            if (_apercu.Image == null) return;
+
+            Rectangle imageRect = GetImageDisplayRectangle(_apercu);
+            if (!imageRect.Contains(e.Location)) return;
+
+            float scaleX = (float)_apercu.Image.Width / imageRect.Width;
+            float scaleY = (float)_apercu.Image.Height / imageRect.Height;
+
+            int imageX = (int)((e.X - imageRect.X) * scaleX);
+            int imageY = (int)((e.Y - imageRect.Y) * scaleY);
+
+            int largeurEtiquette = _apercu.Image.Width / colonnes;
+            int hauteurEtiquette = _apercu.Image.Height / lignes;
+
+            int colonne = imageX / largeurEtiquette;
+            int ligne = imageY / hauteurEtiquette;
+
+            if (colonne >= colonnes || ligne >= lignes) return;
+
+            int etiquettesParPage = colonnes * lignes;
+            int indexEtiquette = pageActuelle * etiquettesParPage + ligne * colonnes + colonne;
+
+            if (indexEtiquette < _Etiquettes.Count)
+            {
+                // Toggle la sélection de toute l'étiquette
+                _Etiquettes[indexEtiquette].EstSelectionne = !_Etiquettes[indexEtiquette].EstSelectionne;
+                GenererApercu(); // Redessiner pour mettre à jour l'affichage
+            }
+        }
+
         private Rectangle GetImageDisplayRectangle(PictureBox pictureBox)
         {
             if (pictureBox.Image == null) return Rectangle.Empty;
@@ -170,12 +213,8 @@ namespace GenererEtiquettes
         private void TailleEtiquettes_10_3(Panel panel)
         {
             Label lblColonnes, lblLignes;
-            panel.Height = 80;
+            panel.Height = 120; // Augmenter la hauteur pour les nouveaux boutons
 
-            // Calculer le nombre d'étiquettes qui peuvent tenir sur une page A4
-            // A4 = 21 x 29,7 cm
-            // Étiquette = 10 x 3 cm
-            // Donc environ 2 colonnes et 9 lignes par défaut
             int colonnesDefaut = (int)Math.Floor(21.0 / 10.0);
             int lignesDefaut = (int)Math.Floor(29.7 / 3.0);
 
@@ -183,9 +222,38 @@ namespace GenererEtiquettes
             nbLignes.Value = lignesDefaut;
 
             btnChargerCSV.Click += (s, e) => LoadFileCsv();
-
             btnPagePrecedente.Click += (s, e) => ChangerPage(-1);
             btnPageSuivante.Click += (s, e) => ChangerPage(1);
+
+            // Ajouter des boutons pour la sélection
+            var btnToutSelectionner = new Button();
+            btnToutSelectionner.Text = "Tout sélectionner";
+            btnToutSelectionner.Location = new Point(10, 90);
+            btnToutSelectionner.Size = new Size(120, 25);
+            btnToutSelectionner.Click += (s, e) => {
+                foreach (var produit in _Etiquettes)
+                    produit.EstSelectionne = true;
+                GenererApercu();
+            };
+            panel.Controls.Add(btnToutSelectionner);
+
+            var btnToutDeselectionner = new Button();
+            btnToutDeselectionner.Text = "Tout désélectionner";
+            btnToutDeselectionner.Location = new Point(140, 90);
+            btnToutDeselectionner.Size = new Size(120, 25);
+            btnToutDeselectionner.Click += (s, e) => {
+                foreach (var produit in _Etiquettes)
+                    produit.EstSelectionne = false;
+                GenererApercu();
+            };
+            panel.Controls.Add(btnToutDeselectionner);
+
+            var lblInfo = new Label();
+            lblInfo.Text = "Clic simple sur ☐ pour sélectionner/désélectionner, double-clic pour éditer";
+            lblInfo.Location = new Point(270, 90);
+            lblInfo.Size = new Size(400, 25);
+            lblInfo.ForeColor = Color.Gray;
+            panel.Controls.Add(lblInfo);
         }
 
         private void GenererApercu()
@@ -267,14 +335,13 @@ namespace GenererEtiquettes
             StringFormat format = new StringFormat();
             format.Alignment = StringAlignment.Center;
             format.LineAlignment = StringAlignment.Center;
-
+            
             int currentIndex = indexProduit;
 
-            for (int y = 0; y < lignes; y++)
+            for (int y = 0; y < lignes && currentIndex < _Etiquettes.Count; y++)
             {
-                for (int x = 0; x < colonnes; x++)
+                for (int x = 0; x < colonnes && currentIndex < _Etiquettes.Count; x++)
                 {
-                    // Dessiner l'étiquette ou un cadre vide
                     Rectangle rectEtiquette = new Rectangle(
                         zone.X + x * largeurEtiquette,
                         zone.Y + y * hauteurEtiquette,
@@ -284,13 +351,18 @@ namespace GenererEtiquettes
                     // Toujours dessiner le cadre
                     g.DrawRectangle(Pens.Black, rectEtiquette);
 
-                    // Si on a une étiquette, la dessiner
-                    if (currentIndex < _Etiquettes.Count)
+                    // Si étiquette non sélectionnée, dessiner un fond grisé
+                    if (!_Etiquettes[currentIndex].EstSelectionne)
                     {
-                        var produit = _Etiquettes[currentIndex];
-                        DessinerChaqueInformation(g, currentIndex, rectEtiquette, produit);
+                        using (Brush grayBrush = new SolidBrush(Color.FromArgb(200, Color.LightGray)))
+                        {
+                            g.FillRectangle(grayBrush, rectEtiquette);
+                            g.DrawRectangle(Pens.Black, rectEtiquette); // Redessiner le cadre par-dessus
+                        }
                     }
-                    // Incrémenter même si pas d'étiquette pour garder la position correcte
+
+                    var produit = _Etiquettes[currentIndex];
+                    DessinerChaqueInformation(g, currentIndex, rectEtiquette, produit);
                     currentIndex++;
                 }
             }
@@ -324,10 +396,14 @@ namespace GenererEtiquettes
 
         private void ImpressionMultiplePages(object sender, PrintPageEventArgs e)
         {
+            // Filtrer seulement les étiquettes sélectionnées
+            var etiquettesSelectionnees = _Etiquettes.Where(p => p.EstSelectionne).ToList();
+
             int colonnes = (int)nbColonnes.Value;
             int lignes = (int)nbLignes.Value;
-            etiquetteCourante = DessinerEtiquettes(e.Graphics, e.MarginBounds, colonnes, lignes, etiquetteCourante);
-            e.HasMorePages = etiquetteCourante < _Etiquettes.Count;
+
+            etiquetteCourante = DessinerEtiquettesImpression(e.Graphics, e.MarginBounds, colonnes, lignes, etiquetteCourante, etiquettesSelectionnees);
+            e.HasMorePages = etiquetteCourante < etiquettesSelectionnees.Count;
         }
 
 
@@ -342,14 +418,32 @@ namespace GenererEtiquettes
             using (Font fontkg = new Font("Arial", 12, FontStyle.Regular))
             using (Font font3eLigne = new Font("Arial", 8, FontStyle.Regular))
             {
-                // Ligne 1: Libellé court centré en haut
+                // AJOUTER UNE CASE À COCHER en haut à droite (seulement pour l'aperçu)
+                Rectangle rectCheckbox = new Rectangle(
+                    rectEtiquette.X + rectEtiquette.Width - 20,
+                    rectEtiquette.Y + 5,
+                    15, 15);
+
+                // Dessiner la case
+                g.DrawRectangle(Pens.Black, rectCheckbox);
+
+                // Si sélectionné, dessiner une croix verte
+                if (produit.EstSelectionne)
+                {
+                    using (Pen penCroix = new Pen(Color.Green, 2))
+                    {
+                        g.DrawLine(penCroix, rectCheckbox.Left + 2, rectCheckbox.Top + 2, rectCheckbox.Right - 2, rectCheckbox.Bottom - 2);
+                        g.DrawLine(penCroix, rectCheckbox.Right - 2, rectCheckbox.Top + 2, rectCheckbox.Left + 2, rectCheckbox.Bottom - 2);
+                    }
+                }
+
+                // Ajuster la zone du libellé pour éviter la case à cocher
                 Rectangle rectLibelleCourt = new Rectangle(
                     rectEtiquette.X + 5,
                     rectEtiquette.Y + 5,
-                    rectEtiquette.Width - 10,
+                    rectEtiquette.Width - 30, // Réduire la largeur pour la checkbox
                     rectEtiquette.Height / 3 - 5);
 
-                // Ligne 2: Deux prix (normal et soldé) et prix/kg
                 Rectangle rectPrixNormal = new Rectangle(
                     rectEtiquette.X,
                     rectEtiquette.Y + rectEtiquette.Height / 3,
@@ -368,7 +462,6 @@ namespace GenererEtiquettes
                     rectEtiquette.Width / 3 - 5,
                     rectEtiquette.Height / 3);
 
-                // Ligne 3: Provenance à gauche et code-barre à droite
                 Rectangle rectProvenance = new Rectangle(
                     rectEtiquette.X + 5,
                     rectEtiquette.Y + 2 * rectEtiquette.Height / 3,
@@ -381,7 +474,6 @@ namespace GenererEtiquettes
                     rectEtiquette.Width / 2 - 5,
                     rectEtiquette.Height / 3 - 5);
 
-                // Formatage pour différents éléments
                 StringFormat formatCentre = new StringFormat
                 {
                     Alignment = StringAlignment.Center,
@@ -400,8 +492,8 @@ namespace GenererEtiquettes
                     LineAlignment = StringAlignment.Center
                 };
 
-                // Dessiner le libellé court en haut, centré
-
+                // Couleur du texte selon la sélection
+                Brush textBrush = produit.EstSelectionne ? Brushes.Black : Brushes.Gray;
 
                 int max = produit.LibelleCourt.Length;
                 if (max > nombreMaximumCaractereLibelle)
@@ -409,42 +501,159 @@ namespace GenererEtiquettes
                     max = nombreMaximumCaractereLibelle;
                 }
 
-                g.DrawString(produit.LibelleCourt.Substring(0, max), fontLibelle, Brushes.Black, rectLibelleCourt, formatCentre);
+                g.DrawString(produit.LibelleCourt.Substring(0, max), fontLibelle, textBrush, rectLibelleCourt, formatCentre);
+                g.DrawString(produit.PrixDeVente.ToString(), fontPrix, textBrush, rectPrixNormal, formatDroite);
 
-                // Dessiner les informations de prix (prix normal, soldé et par kg)
-                g.DrawString(produit.PrixDeVente.ToString(), fontPrix, Brushes.Black, rectPrixNormal, formatDroite);
-
-                // Prix soldé (en rouge et barré pour le prix normal)
                 if (!string.IsNullOrEmpty(produit.PrixSolde.ToString()) && produit.PrixSolde != produit.PrixDeVente && produit.PrixSolde > 0)
                 {
-                    g.DrawString(produit.PrixSolde.ToString(), fontPrix, Brushes.Black, rectPrixSolde, formatGauche);
+                    g.DrawString(produit.PrixSolde.ToString(), fontPrix, textBrush, rectPrixSolde, formatGauche);
                 }
 
                 string parKilo = produit.LibellePoids;
-                //string parKilo = " /kg";
 
                 if (TestGrammeKg(produit.LibelleCourt))
                 {
                     parKilo = string.Empty;
                 }
 
-                g.DrawString(parKilo, fontkg, Brushes.Black, rectPrixKg, formatCentre);
+                g.DrawString(parKilo, fontkg, textBrush, rectPrixKg, formatCentre);
 
-                // Dessiner la provenance en bas à gauche
                 if (!string.IsNullOrEmpty(produit.ReferenceExterne))
                 {
-                    g.DrawString(produit.ReferenceExterne, font3eLigne, Brushes.Black, rectProvenance, formatDroite);
+                    g.DrawString(produit.ReferenceExterne, font3eLigne, textBrush, rectProvenance, formatDroite);
                 }
-
-                //if (!string.IsNullOrEmpty(produit.CodeBarre))
-                //{
-                //    g.DrawString(produit.CodeBarre, font3eLigne, Brushes.Black, rectCodeBarre, formatDroite);
-                //}
 
                 indexProduit++;
             }
 
             return indexProduit;
+        }
+
+        private int DessinerEtiquettesImpression(Graphics g, Rectangle zone, int colonnes, int lignes, int indexProduit, List<Produit> etiquettesSelectionnees)
+        {
+            int largeurEtiquette = zone.Width / colonnes;
+            int hauteurEtiquette = zone.Height / lignes;
+
+            int currentIndex = indexProduit;
+
+            for (int y = 0; y < lignes && currentIndex < etiquettesSelectionnees.Count; y++)
+            {
+                for (int x = 0; x < colonnes && currentIndex < etiquettesSelectionnees.Count; x++)
+                {
+                    Rectangle rectEtiquette = new Rectangle(
+                        zone.X + x * largeurEtiquette,
+                        zone.Y + y * hauteurEtiquette,
+                        largeurEtiquette,
+                        hauteurEtiquette);
+
+                    g.DrawRectangle(Pens.Black, rectEtiquette);
+
+                    var produit = etiquettesSelectionnees[currentIndex];
+                    DessinerChaqueInformationImpression(g, currentIndex, rectEtiquette, produit);
+                    currentIndex++;
+                }
+            }
+
+            return currentIndex;
+        }
+
+        private int DessinerChaqueInformationImpression(Graphics g, int indexProduit, Rectangle rectEtiquette, Produit produit)
+        {
+            // Même code que DessinerChaqueInformation mais SANS case à cocher et toujours en noir
+            using (Font fontLibelle = new Font("Arial", 11, FontStyle.Regular))
+            using (Font fontPrix = new Font("Arial", 13, FontStyle.Bold))
+            using (Font fontPrixSolde = new Font("Arial", 13, FontStyle.Bold))
+            using (Font fontkg = new Font("Arial", 12, FontStyle.Regular))
+            using (Font font3eLigne = new Font("Arial", 8, FontStyle.Regular))
+            {
+                // PAS DE CASE À COCHER pour l'impression
+                Rectangle rectLibelleCourt = new Rectangle(
+                    rectEtiquette.X + 5,
+                    rectEtiquette.Y + 5,
+                    rectEtiquette.Width - 10, // Largeur complète pour l'impression
+                    rectEtiquette.Height / 3 - 5);
+
+                Rectangle rectPrixNormal = new Rectangle(
+                    rectEtiquette.X,
+                    rectEtiquette.Y + rectEtiquette.Height / 3,
+                    rectEtiquette.Width / 2 - 1,
+                    rectEtiquette.Height / 3);
+
+                Rectangle rectPrixSolde = new Rectangle(
+                    rectEtiquette.X + rectEtiquette.Width / 2 + 20,
+                    rectEtiquette.Y + rectEtiquette.Height / 3,
+                    rectEtiquette.Width / 4,
+                    rectEtiquette.Height / 3);
+
+                Rectangle rectPrixKg = new Rectangle(
+                    rectEtiquette.X + 2 * rectEtiquette.Width / 3 + 10,
+                    rectEtiquette.Y + rectEtiquette.Height / 3,
+                    rectEtiquette.Width / 3 - 5,
+                    rectEtiquette.Height / 3);
+
+                Rectangle rectProvenance = new Rectangle(
+                    rectEtiquette.X + 5,
+                    rectEtiquette.Y + 2 * rectEtiquette.Height / 3,
+                    rectEtiquette.Width / 2 + 25,
+                    rectEtiquette.Height / 3 - 5);
+
+                Rectangle rectCodeBarre = new Rectangle(
+                    rectEtiquette.X + rectEtiquette.Width / 2,
+                    rectEtiquette.Y + 2 * rectEtiquette.Height / 3,
+                    rectEtiquette.Width / 2 - 5,
+                    rectEtiquette.Height / 3 - 5);
+
+                StringFormat formatCentre = new StringFormat
+                {
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                };
+
+                StringFormat formatGauche = new StringFormat
+                {
+                    Alignment = StringAlignment.Near,
+                    LineAlignment = StringAlignment.Center
+                };
+
+                StringFormat formatDroite = new StringFormat
+                {
+                    Alignment = StringAlignment.Far,
+                    LineAlignment = StringAlignment.Center
+                };
+
+                // Toujours en noir pour l'impression
+                Brush textBrush = Brushes.Black;
+
+                int max = produit.LibelleCourt.Length;
+                if (max > nombreMaximumCaractereLibelle)
+                {
+                    max = nombreMaximumCaractereLibelle;
+                }
+
+                g.DrawString(produit.LibelleCourt.Substring(0, max), fontLibelle, textBrush, rectLibelleCourt, formatCentre);
+                g.DrawString(produit.PrixDeVente.ToString(), fontPrix, textBrush, rectPrixNormal, formatDroite);
+
+                if (!string.IsNullOrEmpty(produit.PrixSolde.ToString()) && produit.PrixSolde != produit.PrixDeVente && produit.PrixSolde > 0)
+                {
+                    g.DrawString(produit.PrixSolde.ToString(), fontPrix, textBrush, rectPrixSolde, formatGauche);
+                }
+
+                string parKilo = produit.LibellePoids;
+
+                if (TestGrammeKg(produit.LibelleCourt))
+                {
+                    parKilo = string.Empty;
+                }
+
+                g.DrawString(parKilo, fontkg, textBrush, rectPrixKg, formatCentre);
+
+                if (!string.IsNullOrEmpty(produit.ReferenceExterne))
+                {
+                    g.DrawString(produit.ReferenceExterne, font3eLigne, textBrush, rectProvenance, formatDroite);
+                }
+            }
+
+            return indexProduit + 1;
         }
 
         bool TestGrammeKg(string input)
