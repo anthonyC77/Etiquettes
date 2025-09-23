@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace GenererEtiquettes
@@ -11,11 +12,17 @@ namespace GenererEtiquettes
             Produit = produit;
             InitializeComponent();
             ChargerDonnees();
+            Init();
         }
 
         private void FormEditionEtiquette_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void Init()
+        {
+            this.Size = new Size(500, 300);
         }
 
         private void ChargerDonnees()
@@ -36,7 +43,7 @@ namespace GenererEtiquettes
                 Produit.PrixSolde = prixSolde;
             Produit.ReferenceExterne = txtReference.Text;
             Produit.LibellePoids = tbxPoids.Text;
-
+            Produit.EstSelectionne = true;
             DialogResult = DialogResult.OK;
         }
     }

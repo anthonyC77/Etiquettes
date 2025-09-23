@@ -75,7 +75,7 @@ namespace GenererEtiquettes
         private void InitialiserComposants()
         {
             this.Text = "Générateur d'étiquettes";
-            this.Size = new Size(800, 600);
+            this.Size = new Size(2000, 1000);
 
             var panel = new Panel();
             panel.Dock = DockStyle.Top;
