@@ -26,13 +26,9 @@ Pour charger un fichier CSV il suffit de cliquer sur CSV
 <img width="184" height="96" alt="image" src="https://github.com/user-attachments/assets/cdae778c-bf9f-429a-b194-32f273a630cc" />
 
 Ensuite il est possible de naviguer via les flèches : 
-Ou de les choisir individuellement en cliqant dessus :
+Ou de les choisir individuellement en cliquant dessus :
 
 <img width="249" height="109" alt="image" src="https://github.com/user-attachments/assets/450db13e-e66d-4a71-91c7-baebb3a9617b" />
-
-Ensuite il est possible de modifier les étiquettes en double cliquant dessus et de choisir 
-
-<img width="242" height="112" alt="image" src="https://github.com/user-attachments/assets/13ace80c-5918-4194-aaf2-d6b2e93ae0d4" />
 
 Il est aussi possible de cocher ou décocher les étiquettes à sauver ou imprimer : 
 
