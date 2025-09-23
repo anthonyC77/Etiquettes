@@ -26,6 +26,7 @@ Pour charger un fichier CSV il suffit de cliquer sur CSV
 <img width="184" height="96" alt="image" src="https://github.com/user-attachments/assets/cdae778c-bf9f-429a-b194-32f273a630cc" />
 
 Ensuite il est possible de naviguer via les flèches : 
+Ou de les choisir individuellement en cliqant dessus :
 
 <img width="249" height="109" alt="image" src="https://github.com/user-attachments/assets/450db13e-e66d-4a71-91c7-baebb3a9617b" />
 
@@ -36,8 +37,6 @@ Ensuite il est possible de modifier les étiquettes en double cliquant dessus et
 Il est aussi possible de cocher ou décocher les étiquettes à sauver ou imprimer : 
 
 <img width="199" height="151" alt="image" src="https://github.com/user-attachments/assets/3d6db219-3b47-4261-a75a-44ee71e99e7c" />
-
-Ou de les choisir individuellement en cliqant dessus :
 
 <img width="671" height="383" alt="image" src="https://github.com/user-attachments/assets/b8133d7f-8954-4c7f-b99f-3fd9f26d4983" />
 
