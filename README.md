@@ -44,6 +44,24 @@ Un exemple ici avec 5 étiquettes choisies :
 
 <img width="1313" height="1027" alt="image" src="https://github.com/user-attachments/assets/78eb395b-01e8-4ed3-b657-6236a63623e5" />
 
+Il est aussi possible de sauver les données modifiées dans un nouveau CSV.
+En double cliquant chaque étiquette est éditable : 
+
+<img width="785" height="297" alt="image" src="https://github.com/user-attachments/assets/d3ca98ca-5080-4a55-8031-d3dbad64b479" />
+
+La taille du texte peut être modifiée tout en voyant la modification en direct :
+
+<img width="1317" height="165" alt="image" src="https://github.com/user-attachments/assets/6c8a1750-ae63-44ef-b377-9db198d148f8" />
+
+Le clic sur CSV permet de la partie sauvegarde permet l'enregistrement de toutes les modifcations des étiquettes : 
+
+<img width="811" height="496" alt="image" src="https://github.com/user-attachments/assets/fdb8e6e3-53a6-46cf-8d82-b7ae5b285df9" />
+
+Ces données peuvent être à nouveau charger par la suite.
+
+
+
+
 
 
 
