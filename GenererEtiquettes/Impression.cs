@@ -573,6 +573,8 @@ namespace GenererEtiquettes
                     parKilo = string.Empty;
                 }
 
+                parKilo = parKilo.Replace(".00", "");
+
                 g.DrawString(parKilo, fontkg, textBrush, rectPrixKg, formatCentre);
 
                 if (!string.IsNullOrEmpty(produit.ReferenceExterne))
