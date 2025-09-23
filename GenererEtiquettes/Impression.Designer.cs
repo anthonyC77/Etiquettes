@@ -60,6 +60,9 @@
             this.numUpTailleLibelleProv = new System.Windows.Forms.NumericUpDown();
             this.lblTaillePrix = new System.Windows.Forms.Label();
             this.lblProvenance = new System.Windows.Forms.Label();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.nbMaxLibCourt = new System.Windows.Forms.NumericUpDown();
+            this.label3 = new System.Windows.Forms.Label();
             this.groupBox2.SuspendLayout();
             this.grpPage.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -73,6 +76,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.numUpTailleLibellePoids)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numUpdTailleLibelleCourt)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numUpTailleLibelleProv)).BeginInit();
+            this.groupBox6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nbMaxLibCourt)).BeginInit();
             this.SuspendLayout();
             // 
             // btnPagePrecedente
@@ -430,11 +435,44 @@
             this.lblProvenance.TabIndex = 27;
             this.lblProvenance.Text = "Provenance";
             // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.label3);
+            this.groupBox6.Controls.Add(this.nbMaxLibCourt);
+            this.groupBox6.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox6.Location = new System.Drawing.Point(18, 849);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(274, 100);
+            this.groupBox6.TabIndex = 40;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Libelle court";
+            // 
+            // nbMaxLibCourt
+            // 
+            this.nbMaxLibCourt.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.nbMaxLibCourt.Location = new System.Drawing.Point(156, 39);
+            this.nbMaxLibCourt.Margin = new System.Windows.Forms.Padding(4);
+            this.nbMaxLibCourt.Name = "nbMaxLibCourt";
+            this.nbMaxLibCourt.Size = new System.Drawing.Size(63, 26);
+            this.nbMaxLibCourt.TabIndex = 14;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(17, 39);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(78, 20);
+            this.label3.TabIndex = 26;
+            this.label3.Text = "Taille max";
+            // 
             // Impression
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1984, 961);
+            this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.gbxTailleEtiquette);
             this.Controls.Add(this.groupBox1);
@@ -464,6 +502,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.numUpTailleLibellePoids)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numUpdTailleLibelleCourt)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numUpTailleLibelleProv)).EndInit();
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox6.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nbMaxLibCourt)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -502,5 +543,8 @@
         private System.Windows.Forms.NumericUpDown numUpTailleLibelleProv;
         private System.Windows.Forms.Label lblTaillePrix;
         private System.Windows.Forms.Label lblProvenance;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.NumericUpDown nbMaxLibCourt;
     }
 }

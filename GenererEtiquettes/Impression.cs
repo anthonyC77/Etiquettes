@@ -16,7 +16,6 @@ namespace GenererEtiquettes
 {
     public partial class Impression : Form
     {
-        private int nombreMaximumCaractereLibelle = 30;
         private int etiquetteCourante = 0;
         private List<Produit> _Etiquettes;
         private PictureBox _apercu;
@@ -25,14 +24,67 @@ namespace GenererEtiquettes
         private int totalPages = 0;
         private NumericUpDown _taillePoliceLibelle;
         private NumericUpDown _taillePoliceprix;
-        private NumericUpDown _maxCaracteres;
         private string CheminFichier = string.Empty;
+        private IniFile _ini;
+        private const string SectTailles = "Tailles";
 
         public Impression()
         {
             InitializeComponent();
             _Etiquettes = new List<Produit>();
             InitialiserComposants();
+
+            // Initialisation du fichier INI (dans AppData\GenerateurEtiquettes\config.ini)
+            var iniPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "GenerateurEtiquettes", "config.ini");
+            _ini = new IniFile(iniPath);
+
+            ChargerTaillesDepuisIni();
+
+            // Sauvegarder automatiquement à chaque changement + regénérer l’aperçu
+            numUpdTailleLibelleCourt.ValueChanged += (s, e) => { SauverTaillesDansIni(); GenererApercu(); };
+            numUpTailleLibellePrix.ValueChanged += (s, e) => { SauverTaillesDansIni(); GenererApercu(); };
+            numUpTailleLibelleProv.ValueChanged += (s, e) => { SauverTaillesDansIni(); GenererApercu(); };
+            numUpTailleLibellePoids.ValueChanged += (s, e) => { SauverTaillesDansIni(); GenererApercu(); };
+            nbColonnes.ValueChanged += (s, e) => { SauverTaillesDansIni(); };
+            nbLignes.ValueChanged += (s, e) => { SauverTaillesDansIni(); };
+            nbMaxLibCourt.ValueChanged += (s, e) => { SauverTaillesDansIni(); };
+
+            this.FormClosing += (s, e) => SauverTaillesDansIni();
+        }
+
+        private void SauverTaillesDansIni()
+        {
+            if (_ini == null) return;
+
+            _ini.WriteInt(SectTailles, ExtensionsProduit.LibelleCourt, (int)numUpdTailleLibelleCourt.Value);
+            _ini.WriteInt(SectTailles, ExtensionsProduit.Prix, (int)numUpTailleLibellePrix.Value);
+            _ini.WriteInt(SectTailles, ExtensionsProduit.Provenance, (int)numUpTailleLibelleProv.Value);
+            _ini.WriteInt(SectTailles, ExtensionsProduit.Poids, (int)numUpTailleLibellePoids.Value);
+            _ini.WriteInt(SectTailles, ExtensionsProduit.Colonnes, (int)nbColonnes.Value);
+            _ini.WriteInt(SectTailles, ExtensionsProduit.Lignes, (int)nbLignes.Value);
+            _ini.WriteInt(SectTailles, ExtensionsProduit.MaxCharsLibelle, (int)nbMaxLibCourt.Value);
+        }
+
+        private void ChargerTaillesDepuisIni()
+        {
+            if (_ini == null) return;
+
+            // On borne les valeurs pour éviter les erreurs
+            SetNumeric(numUpdTailleLibelleCourt, _ini.ReadInt(SectTailles, ExtensionsProduit.LibelleCourt, 11));
+            SetNumeric(numUpTailleLibellePrix, _ini.ReadInt(SectTailles, ExtensionsProduit.Prix, 13));
+            SetNumeric(numUpTailleLibelleProv, _ini.ReadInt(SectTailles, ExtensionsProduit.Provenance, 8));
+            SetNumeric(numUpTailleLibellePoids, _ini.ReadInt(SectTailles, ExtensionsProduit.Poids, 12));
+            SetNumeric(nbColonnes, _ini.ReadInt(SectTailles, ExtensionsProduit.Colonnes, 2));
+            SetNumeric(nbLignes, _ini.ReadInt(SectTailles, ExtensionsProduit.Lignes, 9));
+            SetNumeric(nbMaxLibCourt, _ini.ReadInt(SectTailles, ExtensionsProduit.MaxCharsLibelle, 30));
+        }
+
+        private void SetNumeric(NumericUpDown nud, int value)
+        {
+            var v = Math.Max((int)nud.Minimum, Math.Min((int)nud.Maximum, value));
+            nud.Value = v;
         }
 
         private void FormImpression_Load(object sender, EventArgs e)
@@ -501,9 +553,9 @@ namespace GenererEtiquettes
                 Brush textBrush = produit.EstSelectionne ? Brushes.Black : Brushes.Gray;
 
                 int max = produit.LibelleCourt.Length;
-                if (max > nombreMaximumCaractereLibelle)
+                if (max > (int)nbMaxLibCourt.Value)
                 {
-                    max = nombreMaximumCaractereLibelle;
+                    max = (int)nbMaxLibCourt.Value;
                 }
 
                 g.DrawString(produit.LibelleCourt.Substring(0, max), fontLibelleCourt, textBrush, rectLibelleCourt, formatCentre);
@@ -630,9 +682,9 @@ namespace GenererEtiquettes
                 Brush textBrush = Brushes.Black;
 
                 int max = produit.LibelleCourt.Length;
-                if (max > nombreMaximumCaractereLibelle)
+                if (max > (int)nbMaxLibCourt.Value)
                 {
-                    max = nombreMaximumCaractereLibelle;
+                    max = (int)nbMaxLibCourt.Value;
                 }
 
                 g.DrawString(produit.LibelleCourt.Substring(0, max), fontLibelle, textBrush, rectLibelleCourt, formatCentre);

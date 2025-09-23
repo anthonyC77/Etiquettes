@@ -19,6 +19,15 @@ namespace GenererEtiquettes
 
     public static class ExtensionsProduit
     {
+        public const string LibelleCourt = "LibelleCourt";
+        public const string Prix = "Prix";
+        public const string Provenance = "Provenance";
+        public const string Poids = "Poids";
+        public const string Colonnes = "Colonnes";
+        public const string Lignes = "Lignes";
+        public const string MaxCharsLibelle = "MaxCharsLibelle";
+
+
         public static string RecupereNomColonne(eProduit colonne)
         {
             switch (colonne)
