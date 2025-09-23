@@ -21,7 +21,10 @@ Colonnes=2
 Lignes=9
 MaxCharsLibelle=30
 
-Pour charger un fichier CSV il suffit de cliquer sur CSV 
+Pour charger un fichier CSV il suffit de cliquer sur CSV
+Il doit impérativement avoir les colonnes suivantes :
+
+Libellé court;Référence externe;Prix de vente;Prix soldé;Code-barres;Poids
 
 <img width="184" height="96" alt="image" src="https://github.com/user-attachments/assets/cdae778c-bf9f-429a-b194-32f273a630cc" />
 
@@ -37,9 +40,6 @@ Il est aussi possible de cocher ou décocher les étiquettes à sauver ou imprim
 <img width="671" height="383" alt="image" src="https://github.com/user-attachments/assets/b8133d7f-8954-4c7f-b99f-3fd9f26d4983" />
 
 Enfin il est possible d'imprimer en PDF 
-
-<img width="235" height="114" alt="image" src="https://github.com/user-attachments/assets/933b8967-99fe-40af-9270-8d65fb7c8b5d" />
-
 Un exemple ici avec 5 étiquettes choisies : 
 
 <img width="1313" height="1027" alt="image" src="https://github.com/user-attachments/assets/78eb395b-01e8-4ed3-b657-6236a63623e5" />
