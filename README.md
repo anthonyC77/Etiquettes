@@ -22,9 +22,11 @@ Lignes=9
 MaxCharsLibelle=30
 
 Pour charger un fichier CSV il suffit de cliquer sur CSV 
+
 <img width="184" height="96" alt="image" src="https://github.com/user-attachments/assets/cdae778c-bf9f-429a-b194-32f273a630cc" />
 
 Ensuite il est possible de naviguer via les flèches : 
+
 <img width="249" height="109" alt="image" src="https://github.com/user-attachments/assets/450db13e-e66d-4a71-91c7-baebb3a9617b" />
 
 Ensuite il est possible de modifier les étiquettes en double cliquant dessus et de choisir 
@@ -42,6 +44,10 @@ Ou de les choisir individuellement en cliqant dessus :
 Enfin il est possible d'imprimer en PDF 
 
 <img width="235" height="114" alt="image" src="https://github.com/user-attachments/assets/933b8967-99fe-40af-9270-8d65fb7c8b5d" />
+
+Un exemple ici avec 5 étiquettes choisies : 
+
+<img width="1313" height="1027" alt="image" src="https://github.com/user-attachments/assets/78eb395b-01e8-4ed3-b657-6236a63623e5" />
 
 
 
