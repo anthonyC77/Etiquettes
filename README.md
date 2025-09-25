@@ -27,7 +27,7 @@ MaxCharsLibelle=30
 Pour charger un fichier CSV il suffit de cliquer sur CSV
 Il doit impérativement avoir les colonnes suivantes :
 
-Libellé court;Référence externe;Prix de vente;Prix soldé;Code-barres;Poids
+Libellé;Libellé court;Référence externe;Prix de vente;Prix soldé;Code-barres;Poids
 
 <img width="184" height="96" alt="image" src="https://github.com/user-attachments/assets/cdae778c-bf9f-429a-b194-32f273a630cc" />
 
