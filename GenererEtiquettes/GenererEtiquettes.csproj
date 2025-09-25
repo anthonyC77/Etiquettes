@@ -124,6 +124,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Demo\Générateur d%27étiquettes 2025-09-25 18-04-54.mp4" />
     <Content Include="ReadMe.txt" />
     <Content Include="Sample\GenererEtiquettes.exe" />
     <Content Include="Sample\GenererEtiquettes.pdb" />
